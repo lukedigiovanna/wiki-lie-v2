@@ -38,6 +38,15 @@ export class GameService {
         return { uuid: null };
     }
 
+    getRoom(uuid: string): Room {
+        // returns the room with the given uuid.
+        const room = this.rooms.get(uuid);
+        if (!room) {
+            throw new HttpException('Room does not exist', 404);
+        }
+        return room;
+    }
+
     joinRoom(ip: string, roomUUID: string) {
         // adds the player to the room.
         const room = this.rooms.get(roomUUID);
@@ -46,10 +55,20 @@ export class GameService {
         }
         const player: Player = {
             uuid: uuidv4(),
-            username: "Guest" + Math.random(),
-            ipAddress: ip
+            username: "Guest" + Math.floor(Math.random() * 89999 + 10000),
+            ipAddress: ip,
+            isAdmin: false,
+            isReady: false,
+            chosenArticle: null
         }
         room.players.push(player);
+        return player;
+    }
+
+    getRooms() {
+        // returns a list of all rooms.
+        const rooms = Array.from(this.rooms.values());
+        return {rooms, numberOfRooms: this.rooms.size};
     }
 }
 

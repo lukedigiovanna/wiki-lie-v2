@@ -15,13 +15,18 @@ export class GameController {
 
     @Post('/join/:uuid')
     joinRoom(@Req() request: Request, @Param('uuid') uuid: string) {
-        console.log(uuid);
         console.log(request.ip, request.connection.remoteAddress);
+        return this.gameService.joinRoom(request.ip, uuid);
     }
 
-    @Get('/ip')
-    getIp(@Req() request: Request) {
-        return request.ip;
+    @Get('/room/:uuid')
+    getRoom(@Param('uuid') uuid: string) {
+        return this.gameService.getRoom(uuid);
+    }
+
+    @Get('/rooms')
+    getRooms() {
+        return this.gameService.getRooms();
     }
 
     @Get()
