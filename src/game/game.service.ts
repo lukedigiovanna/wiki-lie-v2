@@ -4,6 +4,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { Player } from 'src/models/player.model';
 import { v4 as uuidv4 } from 'uuid';
 import { Room } from '../models/room.model';
+import { getIO } from '../socket';
 
 @Injectable()
 export class GameService {
@@ -11,13 +12,26 @@ export class GameService {
 
     constructor() {}
 
+    private updateRoom(uuid: string, update: (room: Room) => Room) {
+        const room = this.rooms.get(uuid);
+        if (room) {
+            this.rooms.set(uuid, update(room));
+            // update through websocket.
+            getIO().to(uuid).emit('room-update', this.rooms.get(uuid));
+        }
+        else {
+            throw new HttpException('Room does not exist', 404);
+        }
+    }
+
     createRoom() {
         // construct a new room
         const uuid = uuidv4();
 
         const room: Room = {
             uuid,
-            players: []
+            guesserIndex: 0,
+            players: [],
         }
         
         this.rooms.set(uuid, room);
@@ -53,15 +67,25 @@ export class GameService {
         if (!room) {
             throw new HttpException('Room does not exist', 404);
         }
+        // check existing connection
+        // TODO: check if the player is already in the room via their IP
+        /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
+        */
         const player: Player = {
             uuid: uuidv4(),
             username: "Guest" + Math.floor(Math.random() * 89999 + 10000),
             ipAddress: ip,
             isAdmin: false,
             isReady: false,
-            chosenArticle: null
+            chosenArticle: null,
+            points: 0
         }
-        room.players.push(player);
+
+        this.updateRoom(roomUUID, (room: Room) => {
+            room.players.push(player);
+            return room;
+        });
+
         return player;
     }
 

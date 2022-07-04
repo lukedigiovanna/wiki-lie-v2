@@ -5,4 +5,5 @@ export interface Player {
     isAdmin: boolean;
     isReady: boolean;
     chosenArticle: string;
+    points: number;
 }

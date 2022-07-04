@@ -2,5 +2,6 @@ import { Player } from "./player.model";
 
 export interface Room {
     uuid: string,
-    players: Player[]
+    players: Player[],
+    guesserIndex: number
 }
