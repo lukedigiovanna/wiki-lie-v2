@@ -7,10 +7,28 @@ import { map, Observable } from 'rxjs';
 export class ArticleService {
     constructor(private readonly httpService: HttpService) {}
 
-    getArticle(articleName: string): Observable<AxiosResponse<any>> {
-        return this.httpService.get(`https://en.wikipedia.org/w/api.php?action=parse&page=${articleName}&format=json`)
-            .pipe(
-                map(response => response.data)
-            );
+    getRandomArticleName(): string {
+        const randomArticles = [
+                'JavaScript',
+                'TypeScript',
+                'Angular',
+                'NestJS',
+                'Node.js',
+                'MongoDB',
+                'Mongoose',
+                'Redis',
+                'Binary code',
+                'Computer science',
+                'Computer graphics',
+                'Artificial intelligence',
+                'Machine learning',
+                'Data science',
+                'Data structure',
+                'Algorithm',
+                'C (programming language)',
+                'C++',
+                'C#',
+        ]
+        return randomArticles[Math.floor(Math.random() * randomArticles.length)];
     }
 }

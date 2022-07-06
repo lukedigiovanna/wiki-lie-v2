@@ -31,6 +31,7 @@ export class GameService {
         const room: Room = {
             uuid,
             guesserIndex: 0,
+            category: "all",
             players: [],
         }
         
@@ -73,6 +74,7 @@ export class GameService {
         */
         const player: Player = {
             uuid: uuidv4(),
+            roomUUID,
             username: "Guest" + Math.floor(Math.random() * 89999 + 10000),
             ipAddress: ip,
             isAdmin: false,

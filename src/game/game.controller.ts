@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post, Put, Req } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { GameService } from './game.service';
 import { Request } from 'express';
@@ -27,6 +27,11 @@ export class GameController {
     @Get('/rooms')
     getRooms() {
         return this.gameService.getRooms();
+    }
+
+    @Put('/room/:uuid/:player')
+    updatePlayer(@Req() request: Request, @Param('uuid') uuid: string, @Param('player') player: string) {
+        console.log(request, uuid, player);
     }
 
     @Get()
