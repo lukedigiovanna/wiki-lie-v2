@@ -6,18 +6,20 @@ export const initSocket = (server: any) => {
     io = new Server(server);    
 
     io.on('connection', (socket: Socket) => {
-        console.log('a user connected');
+        let roomUUID: string | null = null;
+        let playerUUID: string | null = null;
+
         socket.on('disconnect', () => {
-            console.log('user disconnected');
+            console.log(roomUUID, playerUUID);
+            io.to(roomUUID).emit('player-disconnect', {uuid: playerUUID});
         });
 
-        socket.on('player-join', (data: {roomUUID: string}) => {
-            const { roomUUID } = data;
-            socket.join(roomUUID);
+        socket.on('player-join', (data: {roomUUID: string, playerUUID}) => {
+            socket.join(data.roomUUID);
+            roomUUID = data.roomUUID;
+            playerUUID = data.playerUUID;
         })
     });
-
-    console.log("initiated socket");
 }
 
 export const getIO = () => {

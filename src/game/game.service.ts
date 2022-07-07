@@ -46,6 +46,7 @@ export class GameService {
             guesserIndex: 0,
             category: "all",
             isInRound: false,
+            lastStartTime: 0,
             players: [],
         }
         
@@ -86,13 +87,17 @@ export class GameService {
         // TODO: check if the player is already in the room via their IP
         /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
         */
+        const existingPlayer = room.players.find(p => p.ipAddress === ip);
+        if (existingPlayer) {
+            return existingPlayer;
+        }
+
         const player: Player = {
             uuid: uuidv4(),
             roomUUID,
             username: "Guest" + Math.floor(Math.random() * 89999 + 10000),
             ipAddress: ip,
             isAdmin: false,
-            isReady: false,
             chosenArticle: null,
             points: 0
         }
@@ -135,6 +140,14 @@ export class GameService {
         // updates the room.
         this.updateRoom(roomUUID, (room: Room) => {
             Object.assign(room, updateBody);
+            return room;
+        });
+    }
+
+    startGame(roomUUID: string) {
+        this.updateRoom(roomUUID, (room: Room) => {
+            room.isInRound = true;
+            room.lastStartTime = Date.now();
             return room;
         });
     }

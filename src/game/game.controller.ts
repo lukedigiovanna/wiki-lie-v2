@@ -34,6 +34,11 @@ export class GameController {
         return this.gameService.updatePlayer(uuid, player, request.body);
     }
 
+    @Post('/start/:uuid')
+    startGame(@Param('uuid') uuid: string) {
+        return this.gameService.startGame(uuid);
+    }
+
     @Delete('/room/:uuid/:player')
     deletePlayer(@Param('uuid') uuid: string, @Param('player') player: string) {
         return this.gameService.deletePlayer(uuid, player);

@@ -6,4 +6,5 @@ export interface Room {
     guesserIndex: number,
     category: string,
     isInRound: boolean,
+    lastStartTime: number,
 }

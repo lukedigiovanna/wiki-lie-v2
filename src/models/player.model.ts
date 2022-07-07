@@ -4,7 +4,6 @@ export interface Player {
     username: string, // unique among the room the player is in.
     ipAddress: string, // unique among all players.
     isAdmin: boolean;
-    isReady: boolean;
     chosenArticle: string;
     points: number;
 }
