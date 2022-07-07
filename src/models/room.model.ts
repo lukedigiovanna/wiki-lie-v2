@@ -5,4 +5,5 @@ export interface Room {
     players: Player[],
     guesserIndex: number,
     category: string,
+    isInRound: boolean,
 }

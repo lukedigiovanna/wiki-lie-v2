@@ -16,6 +16,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
   axios: ^0.27.2
+  cors: ^2.8.5
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -41,6 +42,7 @@ dependencies:
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/serve-static': 2.2.2_7tsmhnugyerf5okgqzer2mfqme
   axios: 0.27.2
+  cors: 2.8.5
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.5

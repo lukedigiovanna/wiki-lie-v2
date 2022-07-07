@@ -15,7 +15,20 @@ export class GameService {
     private updateRoom(uuid: string, update: (room: Room) => Room) {
         const room = this.rooms.get(uuid);
         if (room) {
-            this.rooms.set(uuid, update(room));
+            const newRoom = update(room);
+            // now update certain fields in the new room that need to be updated.
+            // if there are no players in the room, delete it.
+            if (newRoom.players.length === 0) {
+                this.rooms.delete(uuid);
+                return;
+            }
+            // if there is only one player in the room, make them the admin.
+            if (newRoom.players.length === 1) {
+                newRoom.players[0].isAdmin = true;
+            }
+            // if the guesser index is out of bounds, set it to the first player.
+            newRoom.guesserIndex %= newRoom.players.length;
+            this.rooms.set(uuid, newRoom);
             // update through websocket.
             getIO().to(uuid).emit('room-update', this.rooms.get(uuid));
         }
@@ -32,6 +45,7 @@ export class GameService {
             uuid,
             guesserIndex: 0,
             category: "all",
+            isInRound: false,
             players: [],
         }
         
@@ -89,6 +103,40 @@ export class GameService {
         });
 
         return player;
+    }
+
+    updatePlayer(roomUUID, playerUUID, updateBody) {
+        // updates the player's info.
+        let player;
+        this.updateRoom(roomUUID, (room: Room) => {
+            player = room.players.find(p => p.uuid === playerUUID);
+            if (!player) {
+                throw new HttpException('Player does not exist', 404);
+            }
+            Object.assign(player, updateBody);
+            return room;
+        });
+        return player;
+    }
+
+    deletePlayer(roomUUID: string, playerUUID: string) {
+        // removes the player from the room.
+        this.updateRoom(roomUUID, (room: Room) => {
+            const playerIndex = room.players.findIndex(p => p.uuid === playerUUID);
+            if (playerIndex === -1) {
+                throw new HttpException('Player does not exist', 404);
+            }
+            room.players.splice(playerIndex, 1);
+            return room;
+        });
+    }
+
+    patchRoom(roomUUID: string, updateBody) {
+        // updates the room.
+        this.updateRoom(roomUUID, (room: Room) => {
+            Object.assign(room, updateBody);
+            return room;
+        });
     }
 
     getRooms() {
