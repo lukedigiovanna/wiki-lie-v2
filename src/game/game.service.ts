@@ -30,9 +30,8 @@ class GameService {
             // update through websocket.
             getIO().to(uuid).emit('room-update', this.rooms.get(uuid));
         }
-        else {
-            throw new HttpException('Room does not exist', 404);
-        }
+        // if the room does not exist, it will not matter because no players will be connected.
+        // so, we can do nothing.
     }
 
     createRoom() {
@@ -71,7 +70,6 @@ class GameService {
         // returns the room with the given uuid.
         const room = this.rooms.get(uuid);
         if (!room) {
-            console.log("Maggie is dummy");
             throw new HttpException('Room does not exist', 404);
         }
         return room;
@@ -81,15 +79,22 @@ class GameService {
         // adds the player to the room.
         const room = this.rooms.get(roomUUID);
         if (!room) {
-            throw new HttpException('Room does not exist', 404);
+            throw new HttpException('Room does not exist!', 404);
         }
         // check existing connection
         // TODO: check if the player is already in the room via their IP
         /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
         */
-        const existingPlayer = room.players.find(p => p.ipAddress === ip);
-        if (existingPlayer) {
-            return existingPlayer;
+        // const existingPlayer = room.players.find(p => p.ipAddress === ip);
+        // if (existingPlayer) {
+        //     if (existingPlayer.isConnected) {
+        //         throw new HttpException('You are already in the room!', 400);
+        //     }
+        //     return existingPlayer;
+        // }
+
+        if (room.isInRound) {
+            throw new HttpException('Game is already in progress!', 400);
         }
 
         const player: Player = {

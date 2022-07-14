@@ -20,6 +20,8 @@ class App {
         routes.forEach(route => {
             this.app.use(route.path, route.router);
         });
+
+        this.app.use(express.static('public_html'));
     }
 
     private initializeMiddleware() {
