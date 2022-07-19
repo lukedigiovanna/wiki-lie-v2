@@ -44,6 +44,11 @@ class GameController {
     }
 
     @Endpoint
+    makeGuess(req: Request, res: Response) {
+        return game.makeGuess(req.params.roomUUID, req.params.playerUUID);
+    }
+
+    @Endpoint
     entry(req: Request, res: Response) {
         return `<h1 style='color: red'> You should not be here </h1>`
     }

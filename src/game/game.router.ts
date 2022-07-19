@@ -15,15 +15,16 @@ class GameRouter implements RouteSource {
     }
 
     private initializeRoutes() {
-        this.router.post  ('/create',             this.controller.createGame);
-        this.router.post  ('/join/:uuid',         this.controller.joinRoom);
-        this.router.get   ('/room/:uuid',         this.controller.getRoom);
-        this.router.get   ('/rooms',              this.controller.getRooms);
-        this.router.patch ('/room/:uuid/:player', this.controller.updatePlayer);
-        this.router.post  ('/start/:uuid',        this.controller.startGame);
-        this.router.delete('/room/:uuid/:player', this.controller.deletePlayer);
-        this.router.patch ('/room/:uuid',         this.controller.updateRoom);
-        this.router.get   ('/',                   this.controller.entry);
+        this.router.post  ('/create',                      this.controller.createGame);
+        this.router.post  ('/join/:uuid',                  this.controller.joinRoom);
+        this.router.get   ('/room/:uuid',                  this.controller.getRoom);
+        this.router.get   ('/rooms',                       this.controller.getRooms);
+        this.router.patch ('/room/:uuid/:player',          this.controller.updatePlayer);
+        this.router.post  ('/start/:uuid',                 this.controller.startGame);
+        this.router.delete('/room/:uuid/:player',          this.controller.deletePlayer);
+        this.router.patch ('/room/:uuid',                  this.controller.updateRoom);
+        this.router.post  ('/guess/:roomUUID/:playerUUID', this.controller.makeGuess);
+        this.router.get   ('/',                            this.controller.entry);
     }
 }
 

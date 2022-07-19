@@ -3,6 +3,7 @@ import { getIO } from "../socket";
 import { v4 as uuidv4} from "uuid";
 import { Player } from "../models/player.model";
 import { HttpException } from "../models/exception.model";
+import { RoundOver } from "../models/roundover.model";
 
 // contains all necessary functions to handle the games.
 class GameService {
@@ -93,9 +94,9 @@ class GameService {
         //     return existingPlayer;
         // }
 
-        if (room.isInRound) {
-            throw new HttpException('Game is already in progress!', 400);
-        }
+        // if (room.isInRound) {
+        //     throw new HttpException('Game is already in progress!', 400);
+        // }
 
         const player: Player = {
             uuid: uuidv4(),
@@ -170,6 +171,49 @@ class GameService {
             while (room.articleIndex === room.guesserIndex);
             return room;
         });
+    }
+
+    makeGuess(roomUUID: string, playerUUID: string) {
+        this.updateRoom(roomUUID, (room: Room) => {
+            const guesser = room.players[room.guesserIndex];
+            const guessedIndex = room.players.findIndex(p => p.uuid === playerUUID);
+            if (guessedIndex === -1) {
+                throw new HttpException("Player does not exist", 404);
+            }
+
+            let wasCorrect;
+            // if the guesser guessed the wrong person.
+            if (guessedIndex !== room.articleIndex) {
+                // the guessed player fooled the guesser, so they get 2 points.
+                room.players[guessedIndex].points += 2;
+                wasCorrect = false;
+            }
+            else { // the guesser guessed the correct person.
+                // both players get a point. 1 for being good at being truthful and 1 for spotting the truth.
+                guesser.points++;
+                room.players[guessedIndex].points++;
+                wasCorrect = true;
+            }
+            
+            // construct a round over object to send to the players
+            const roundOver: RoundOver = {
+                guesserUsername: guesser.username,
+                guessedUsername: room.players[guessedIndex].username,
+                truthTeller: room.players[room.articleIndex].username,
+                wasCorrect
+            }
+
+            // now increment the round.
+            // so, the person who had the article should now have to choose a new one
+            room.players[room.articleIndex].chosenArticle = null;
+            room.isInRound = false; // not in round anymore
+            room.guesserIndex = (room.guesserIndex + 1) % room.players.length; // move the guesser to the next player.
+
+            getIO().to(roomUUID).emit('round-over', roundOver);
+
+            return room;
+        });
+
     }
 
     getRooms() {
