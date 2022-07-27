@@ -16,14 +16,20 @@ class GameService {
         if (room) {
             const newRoom = update(room);
             // now update certain fields in the new room that need to be updated.
-            // if there are no players in the room, delete it.
-            if (newRoom.players.length === 0) {
-                this.rooms.delete(uuid);
-                return;
-            }
+            // if there are no connected players in the room, delete it.
+
+            const numConnectedPlayers = newRoom.players.filter(p => p.isConnected).length;
+
+            let shouldDelete: boolean = numConnectedPlayers === 0;
+            // if (shouldDelete) {
+            //     this.rooms.delete(uuid);
+            //     return;
+            // }
+
             // if there is only one player in the room, make them the admin.
-            if (newRoom.players.length === 1) {
-                newRoom.players[0].isAdmin = true;
+            if (numConnectedPlayers === 1) {
+                const p = newRoom.players.find(p => p.isConnected);
+                if (p) p.isAdmin = true;
             }
             // if the guesser index is out of bounds, set it to the first player.
             newRoom.guesserIndex %= newRoom.players.length;
@@ -121,11 +127,24 @@ class GameService {
         // updates the player's info.
         let player;
         this.updateRoom(roomUUID, (room: Room) => {
-            player = room.players.find(p => p.uuid === playerUUID);
-            if (!player) {
-                throw new HttpException('Player does not exist', 404);
+            let index = room.players.findIndex(p => p.uuid === playerUUID);
+
+            if (index !== -1) {
+                player = room.players[index];
+                Object.assign(player, updateBody);
+                // if the player just disconnected and they are admin, move the admin.
+                if (!player.isConnected && player.isAdmin) {
+                    player.isAdmin = false;
+                    // find next available player.
+                    for (let i = 1; i < room.players.length; i++) {
+                        let nextIndex = (i + index) % room.players.length;
+                        if (room.players[nextIndex].isConnected) {
+                            room.players[nextIndex].isAdmin = true;
+                            break;
+                        }
+                    }
+                }
             }
-            Object.assign(player, updateBody);
             return room;
         });
         return player;
