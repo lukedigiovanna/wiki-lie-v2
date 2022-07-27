@@ -87,10 +87,10 @@ class GameService {
         // TODO: check if the player is already in the room via their IP
         /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
         */
-        // const existingPlayer = room.players.find(p => p.ipAddress === ip);
-        // if (existingPlayer) {
-        //     return existingPlayer;
-        // }
+        const existingPlayer = room.players.find(p => p.ipAddress === ip);
+        if (existingPlayer) {
+            return existingPlayer;
+        }
 
         const player: Player = {
             uuid: uuidv4(),
