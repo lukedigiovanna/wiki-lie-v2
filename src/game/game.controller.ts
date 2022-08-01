@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import game from './game.service';
 import { Endpoint } from '../utils';
+import { collectPagesInCategory } from '../utils/wikipedia';
 
 class GameController {
     @Endpoint
@@ -51,6 +52,18 @@ class GameController {
     @Endpoint
     entry(req: Request, res: Response) {
         return `<h1 style='color: red'> You should not be here </h1>`
+    }
+
+    // @Endpoint
+    // async test(req: Request, res: Response) {
+    //     const pages = await collectPagesInCategory(`Category:${req.query.category}`);
+    //     console.log("Results: ", pages);
+    //     return pages;
+    // }
+
+    @Endpoint 
+    randomArticle(req: Request, res: Response) {
+        return game.randomArticle(req.query.category as string);
     }
 }
 

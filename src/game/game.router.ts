@@ -25,6 +25,8 @@ class GameRouter implements RouteSource {
         this.router.patch ('/room/:uuid',                  this.controller.updateRoom);
         this.router.post  ('/guess/:roomUUID/:playerUUID', this.controller.makeGuess);
         this.router.get   ('/',                            this.controller.entry);
+
+        this.router.get   ('/random-article',              this.controller.randomArticle);
     }
 }
 
