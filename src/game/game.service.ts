@@ -25,10 +25,10 @@ class GameService {
             const numConnectedPlayers = newRoom.players.filter(p => p.isConnected).length;
 
             let shouldDelete: boolean = numConnectedPlayers === 0;
-            // if (shouldDelete) {
-            //     this.rooms.delete(uuid);
-            //     return;
-            // }
+            if (shouldDelete) {
+                this.rooms.delete(uuid);
+                return;
+            }
 
             // check if we need to collect categories
             if (newRoom.category !== "All articles" && !this.categories.has(newRoom.category)) {
@@ -103,17 +103,17 @@ class GameService {
         // TODO: check if the player is already in the room via their IP
         /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
         */
-        // const existingPlayer = room.players.find(p => p.ipAddress === ip);
-        // if (existingPlayer) {
-        //     if (existingPlayer.isConnected) {
-        //         throw new HttpException('You are already in the room!', 400);
-        //     }
-        //     return existingPlayer;
-        // }
+        const existingPlayer = room.players.find(p => p.ipAddress === ip);
+        if (existingPlayer) {
+            if (existingPlayer.isConnected) {
+                throw new HttpException('You are already in the room!', 400);
+            }
+            return existingPlayer;
+        }
 
-        // if (room.isInRound) {
-        //     throw new HttpException('Game is already in progress!', 400);
-        // }
+        if (room.isInRound) {
+            throw new HttpException('Game is already in progress!', 400);
+        }
 
         const player: Player = {
             uuid: uuidv4(),
