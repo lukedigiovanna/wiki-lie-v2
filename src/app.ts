@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import { Server } from "http";
 import { RouteSource } from "./models/router.model";
 import { initSocket } from "./socket";
+const path = require('path');
 
 class App {
     private app: Application;
@@ -21,7 +22,12 @@ class App {
             this.app.use(route.path, route.router);
         });
 
-        this.app.use(express.static('public_html'));
+        this.app.use(express.static('src/public_html'));
+        
+        this.app.get('/*', function (req, res) {
+            res.sendFile(path.join(__dirname, 'public_html', 'index.html'));
+
+        });
     }
 
     private initializeMiddleware() {
