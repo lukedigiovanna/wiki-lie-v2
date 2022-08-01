@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3074f656.css",
+    "main.js": "/static/js/main.c1e7f68b.js",
+    "static/media/wiki-logo.png": "/static/media/wiki-logo.ee46b3bbf7232fec0fe8.png",
+    "static/media/reading-animation-thick.gif": "/static/media/reading-animation-thick.17d510ebbaf3fcf1a92c.gif",
+    "index.html": "/index.html",
+    "main.3074f656.css.map": "/static/css/main.3074f656.css.map",
+    "main.c1e7f68b.js.map": "/static/js/main.c1e7f68b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3074f656.css",
+    "static/js/main.c1e7f68b.js"
+  ]
+}
