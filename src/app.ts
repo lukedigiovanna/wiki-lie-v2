@@ -9,7 +9,7 @@ class App {
     private server: Server;
 
     constructor(routes: RouteSource[]) {
-        this.port = 4000;
+        this.port = 80;
         this.app = express();
         this.server = new Server(this.app);
 
