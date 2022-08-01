@@ -4,10 +4,14 @@ import { v4 as uuidv4} from "uuid";
 import { Player } from "../models/player.model";
 import { HttpException } from "../models/exception.model";
 import { RoundOver } from "../models/roundover.model";
+import { collectPagesInCategory } from "../utils/wikipedia";
 
 // contains all necessary functions to handle the games.
 class GameService {
     private rooms: Map<string, Room> = new Map<string, Room>();
+
+    // let's also store collections of discovered categories (ones that are currently being used)
+    private categories: Map<string, string[]> = new Map<string, string[]>();
 
     constructor() {}
 
@@ -25,6 +29,13 @@ class GameService {
             //     this.rooms.delete(uuid);
             //     return;
             // }
+
+            // check if we need to collect categories
+            if (newRoom.category !== "All articles" && !this.categories.has(newRoom.category)) {
+                collectPagesInCategory(`Category:${newRoom.category}`).then(pages => {
+                    this.categories.set(newRoom.category, pages);
+                });
+            }
 
             // if there is only one player in the room, make them the admin.
             if (numConnectedPlayers === 1) {
@@ -49,7 +60,7 @@ class GameService {
             uuid,
             guesserIndex: 0,
             articleIndex: 0,
-            category: "all",
+            category: "All articles",
             isInRound: false,
             lastStartTime: 0,
             players: [],
@@ -157,6 +168,9 @@ class GameService {
             if (playerIndex === -1) {
                 throw new HttpException('Player does not exist', 404);
             }
+            if (room.guesserIndex > playerIndex) {
+                room.guesserIndex--;
+            }
             room.players.splice(playerIndex, 1);
             return room;
         });
@@ -239,6 +253,15 @@ class GameService {
         // returns a list of all rooms.
         const rooms = Array.from(this.rooms.values());
         return {rooms, numberOfRooms: this.rooms.size};
+    }
+
+    randomArticle(category: string) {
+        // returns a random article from the given category.
+        const articles = this.categories.get(category);
+        if (!articles) {
+            throw new HttpException("Category does not exist", 404);
+        }
+        return articles[Math.floor(Math.random() * articles.length)];
     }
 }
 
