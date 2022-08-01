@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon"
+    "start:dev": "nodemon",
+    "start": "npx ts-node ./src/index.ts"
   },
   "keywords": [],
   "author": "",
