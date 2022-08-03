@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import game from './game.service';
 import { Endpoint } from '../utils';
-import { collectPagesInCategory } from '../utils/wikipedia';
 
 class GameController {
     @Endpoint
@@ -11,7 +10,11 @@ class GameController {
 
     @Endpoint
     joinRoom(req: Request, res: Response) {
-        return game.joinRoom(req.ip, req.params.uuid);
+        let ip = req.headers["x-forwarded-for"];
+        if (!ip) {
+            ip = req.socket.remoteAddress;
+        }
+        return game.joinRoom(ip as string, req.params.uuid);
     }
 
     @Endpoint 
@@ -53,13 +56,6 @@ class GameController {
     entry(req: Request, res: Response) {
         return `<h1 style='color: red'> You should not be here </h1>`
     }
-
-    // @Endpoint
-    // async test(req: Request, res: Response) {
-    //     const pages = await collectPagesInCategory(`Category:${req.query.category}`);
-    //     console.log("Results: ", pages);
-    //     return pages;
-    // }
 
     @Endpoint 
     randomArticle(req: Request, res: Response) {

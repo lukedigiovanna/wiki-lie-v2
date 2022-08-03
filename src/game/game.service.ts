@@ -103,11 +103,13 @@ class GameService {
         // TODO: check if the player is already in the room via their IP
         /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
         */
+        console.log("Player with IP: " + ip + " is trying to join room: " + roomUUID);
         const existingPlayer = room.players.find(p => p.ipAddress === ip);
         if (existingPlayer) {
             if (existingPlayer.isConnected) {
                 throw new HttpException('You are already in the room!', 400);
             }
+            this.updatePlayer(roomUUID, existingPlayer.uuid, { isConnected: true } as Player);
             return existingPlayer;
         }
 

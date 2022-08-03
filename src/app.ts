@@ -10,7 +10,7 @@ class App {
     private server: Server;
 
     constructor(routes: RouteSource[]) {
-        this.port = process.env.PORT ? Number(process.env.PORT) : 80;
+        this.port = process.env.PORT ? Number(process.env.PORT) : 4000;
         this.app = express();
         this.server = new Server(this.app);
 
