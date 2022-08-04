@@ -72,18 +72,6 @@ class GameService {
         return { uuid };
     }
 
-    checkJoinStatus(ip: string): { uuid: string | null} {
-        // returns the uuid of the room the player is in, or null if they are not in a room.
-        for (const [uuid, room] of this.rooms) {
-            for (const player of room.players) {
-                if (player.ipAddress === ip) {
-                    return { uuid };
-                }
-            }
-        }
-        return { uuid: null };
-    }
-
     getRoom(uuid: string): Room {
         // returns the room with the given uuid.
         const room = this.rooms.get(uuid);
@@ -93,18 +81,18 @@ class GameService {
         return room;
     }
 
-    joinRoom(ip: string, roomUUID: string) {
+    joinRoom(sessionID: string | undefined, roomUUID: string) {
         // adds the player to the room.
         const room = this.rooms.get(roomUUID);
         if (!room) {
             throw new HttpException('Room does not exist!', 404);
         }
+        if (!sessionID) {
+            // generate a random session id
+            sessionID = uuidv4();
+        }
         // check existing connection
-        // TODO: check if the player is already in the room via their IP
-        /* LEFT OUT TEMPORARILY DURING DEVELOPMENT
-        */
-        console.log("Player with IP: " + ip + " is trying to join room: " + roomUUID);
-        const existingPlayer = room.players.find(p => p.ipAddress === ip);
+        const existingPlayer = room.players.find(p => p.sessionID === sessionID);
         if (existingPlayer) {
             if (existingPlayer.isConnected) {
                 throw new HttpException('You are already in the room!', 400);
@@ -121,7 +109,7 @@ class GameService {
             uuid: uuidv4(),
             roomUUID,
             username: "Guest" + Math.floor(Math.random() * 89999 + 10000),
-            ipAddress: ip,
+            sessionID,
             isAdmin: false,
             chosenArticle: null,
             isConnected: true,

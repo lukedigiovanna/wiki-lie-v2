@@ -10,17 +10,9 @@ class GameController {
 
     @Endpoint
     joinRoom(req: Request, res: Response) {
-        console.log("NEW JOIN REQUEST");
-        console.log('x-forwarded-for', req.headers['x-forwarded-for']);
-        console.log('remoteAddress', req.socket.remoteAddress);
-        console.log('localAddress', req.socket.localAddress);
-        console.log('ip', req.ip);
-        console.log('ips', req.ips);
-        console.log('hostname', req.hostname)
-        console.log('localport', req.socket.localPort);
-        console.log('remoteport', req.socket.remotePort);
-        console.log();
-        return game.joinRoom(req.socket.remoteAddress as string, req.params.uuid);
+        console.log(req.cookies);
+        // console.log(req.session);
+        return game.joinRoom(req.cookies?.sessionID as string, req.params.uuid);
     }
 
     @Endpoint 
