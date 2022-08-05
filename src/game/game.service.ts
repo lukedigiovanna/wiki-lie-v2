@@ -24,7 +24,7 @@ class GameService {
 
             const numConnectedPlayers = newRoom.players.filter(p => p.isConnected).length;
 
-            let shouldDelete: boolean = numConnectedPlayers === 0;
+            let shouldDelete: boolean = newRoom.players.length === 0;
             if (shouldDelete) {
                 this.rooms.delete(uuid);
                 return;

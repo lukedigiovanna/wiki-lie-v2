@@ -11,7 +11,7 @@ class App {
     private server: Server;
 
     constructor(routes: RouteSource[]) {
-        this.port = process.env.PORT ? Number(process.env.PORT) : 80;
+        this.port = process.env.PORT ? Number(process.env.PORT) : 4000;
         this.app = express();
         this.server = new Server(this.app);
 
@@ -33,14 +33,14 @@ class App {
 
     private initializeMiddleware() {
         this.app.use(express.json());
+        this.app.use(cookieParser());
         this.app.use((req, res, next) => {
-            res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-            res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, Cookie");
-            res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-            res.header("Access-Control-Allow-Credentials", "true");
+            res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, Cookie");
+            res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+            res.setHeader("Access-Control-Allow-Credentials", "true");
+            res.setHeader("Access-Control-Allow-Origin", "*");
             next();
         });
-        this.app.use(cookieParser());
     }
 
     public listen() {

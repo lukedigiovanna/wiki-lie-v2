@@ -10,8 +10,10 @@ export const initSocket = (server: any) => {
     io.on('connection', (socket: Socket) => {
         let roomUUID: string | null = null;
         let playerUUID: string | null = null;
+        console.log(socket.id, 'connected');
 
         socket.on('disconnect', () => {
+            console.log(socket.id, 'disconnected');
             if (roomUUID && playerUUID) {
                 game.updatePlayer(roomUUID, playerUUID, {isConnected: false} as Player);
             }
