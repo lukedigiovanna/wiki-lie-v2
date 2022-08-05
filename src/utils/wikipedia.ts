@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const pagesEP = (title: string): string => `https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${title}&cmlimit=max&format=json&cmnamespace=0`;
-const subcategoriesEP = (title: string): string => `https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${title}&cmlimit=max&format=json&cmtype=subcat`;
+const pagesEP = (title: string): string => encodeURI(`https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${title}&cmlimit=max&format=json&cmnamespace=0`);
+const subcategoriesEP = (title: string): string => encodeURI(`https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${title}&cmlimit=max&format=json&cmtype=subcat`);
 
 /*
     Collects the article pages in a given category.

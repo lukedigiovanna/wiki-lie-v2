@@ -1,15 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.3074f656.css",
-    "main.js": "/static/js/main.549ecda9.js",
+    "main.js": "/static/js/main.d53da56a.js",
     "static/media/wiki-logo.png": "/static/media/wiki-logo.ee46b3bbf7232fec0fe8.png",
-    "static/media/reading-animation-thick.gif": "/static/media/reading-animation-thick.17d510ebbaf3fcf1a92c.gif",
+    "static/media/reading.gif": "/static/media/reading.17d510ebbaf3fcf1a92c.gif",
+    "static/media/crown.png": "/static/media/crown.808a4e9bcb88c78f52a1.png",
     "index.html": "/index.html",
     "main.3074f656.css.map": "/static/css/main.3074f656.css.map",
-    "main.549ecda9.js.map": "/static/js/main.549ecda9.js.map"
+    "main.d53da56a.js.map": "/static/js/main.d53da56a.js.map"
   },
   "entrypoints": [
     "static/css/main.3074f656.css",
-    "static/js/main.549ecda9.js"
+    "static/js/main.d53da56a.js"
   ]
 }

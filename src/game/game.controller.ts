@@ -10,8 +10,6 @@ class GameController {
 
     @Endpoint
     joinRoom(req: Request, res: Response) {
-        console.log(req.cookies);
-        // console.log(req.session);
         return game.joinRoom(req.cookies?.sessionID as string, req.params.uuid);
     }
 
