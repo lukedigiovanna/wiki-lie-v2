@@ -64,6 +64,7 @@ class GameService {
             isInRound: false,
             lastStartTime: 0,
             players: [],
+            roundNumber: 1
         }
         
         this.rooms.set(uuid, room);
@@ -113,7 +114,8 @@ class GameService {
             isAdmin: false,
             chosenArticle: null,
             isConnected: true,
-            points: 0
+            points: 0,
+            isNew: true
         }
 
         this.updateRoom(roomUUID, (room: Room) => {
@@ -223,7 +225,9 @@ class GameService {
                 guesserUsername: guesser.username,
                 guessedUsername: room.players[guessedIndex].username,
                 truthTeller: room.players[room.articleIndex].username,
-                wasCorrect
+                wasCorrect,
+                roundNumber: room.roundNumber,
+                articleTitle: room.players[room.articleIndex].chosenArticle as string,
             }
 
             // now increment the round.
@@ -231,6 +235,8 @@ class GameService {
             room.players[room.articleIndex].chosenArticle = null;
             room.isInRound = false; // not in round anymore
             room.guesserIndex = (room.guesserIndex + 1) % room.players.length; // move the guesser to the next player.
+
+            room.roundNumber++;
 
             getIO().to(roomUUID).emit('round-over', roundOver);
 

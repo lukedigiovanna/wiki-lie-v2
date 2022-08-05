@@ -8,4 +8,5 @@ export interface Room {
     category: string,
     isInRound: boolean,
     lastStartTime: number,
+    roundNumber: number
 }

@@ -3,4 +3,6 @@ export interface RoundOver {
     guessedUsername: string;
     truthTeller: string;
     wasCorrect: boolean;
+    roundNumber: number;
+    articleTitle: string;
 }

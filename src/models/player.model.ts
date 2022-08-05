@@ -7,4 +7,5 @@ export interface Player {
     chosenArticle: string | null;
     isConnected: boolean;
     points: number;
+    isNew: boolean;
 }
