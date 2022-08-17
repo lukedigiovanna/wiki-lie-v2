@@ -6,7 +6,11 @@ export interface Room {
     guesserIndex: number,
     articleIndex: number,
     category: string,
+    changingCategory: boolean,
+    numPossibleArticles: number,
     isInRound: boolean,
     lastStartTime: number,
-    roundNumber: number
+    roundNumber: number,
+    timeLimitPerRound: number, // (300 - 900 seconds)
+    guesserGracePeriod: number // (15 - 60 seconds)
 }

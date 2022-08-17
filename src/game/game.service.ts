@@ -18,7 +18,7 @@ class GameService {
     private updateRoom(uuid: string, update: (room: Room) => Room) {
         const room = this.rooms.get(uuid);
         if (room) {
-            const newRoom = update(room);
+            const newRoom = update({...room});
             // now update certain fields in the new room that need to be updated.
             // if there are no connected players in the room, delete it.
 
@@ -30,10 +30,39 @@ class GameService {
                 return;
             }
 
+            if (room.category !== newRoom.category) {
+                newRoom.changingCategory = true;
+                if (newRoom.category === "All articles") {
+                    setTimeout(() => {
+                        this.updateRoom(uuid, r => {
+                            r.numPossibleArticles = 16728395;
+                            r.changingCategory = false;
+                            return r;
+                        });
+                    }, 500);
+                }
+                else if (this.categories.has(newRoom.category)) {
+                    const numArticles: number = this.categories.get(newRoom.category)?.length as number;
+                    // wait half a second to send the message that it is changed so the client can update the UI.
+                    setTimeout(() => {
+                        this.updateRoom(uuid, r => {
+                            r.numPossibleArticles = numArticles;
+                            r.changingCategory = false;
+                            return r;
+                        });
+                    }, 500); 
+                }
+            }
+
             // check if we need to collect categories
             if (newRoom.category !== "All articles" && !this.categories.has(newRoom.category)) {
                 collectPagesInCategory(`Category:${newRoom.category}`).then(pages => {
                     this.categories.set(newRoom.category, pages);
+                    this.updateRoom(uuid, r => { 
+                        r.numPossibleArticles = pages.length; 
+                        r.changingCategory = false;
+                        return r 
+                    });
                 });
             }
 
@@ -61,10 +90,14 @@ class GameService {
             guesserIndex: 0,
             articleIndex: 0,
             category: "All articles",
+            changingCategory: false,
+            numPossibleArticles: 16728395, // this is the number of main articles in the english wikipedia.
             isInRound: false,
             lastStartTime: 0,
             players: [],
-            roundNumber: 1
+            roundNumber: 1,
+            timeLimitPerRound: 600,
+            guesserGracePeriod: 30
         }
         
         this.rooms.set(uuid, room);
